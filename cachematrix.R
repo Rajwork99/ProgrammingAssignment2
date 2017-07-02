@@ -1,23 +1,31 @@
-makeCacheMatrix <- function(data=numeric(),nrow=0, ncol=0){
-  #to create a matrix with define data
-  x1 <- matrix(data,nrow,ncol)
-  # to create a table with inverse matrix
-  data.matrix(solve(x1)) -> Table.data
- 
-  View(Table.data) 
+# makeCacheMatrix: This function creates a special "matrix" object that can cache its inverse.
+#  it calculates the inverse of the matrices and sets the value of the inverse in the cache via the setmean function.
+
+        set <- function(y) {
+                x <<- y
+                m <<- NULL
+        }
+        get <- function() x
+        setinverse <- function(solve) m <<- solve
+        getinverse <- function() m
+        list(set = set, get = get,
+             setinverse = setinverse,
+             getinverse = getinverse)
 }
 
   # to create a function to check inverse table
-  cacheSolve <- function(matrix=x1) {
-    m <- Table.data
-    if(!is.null(m)) {
-      message("getting cached data")
-      return(m)
-    }
-    x1 <- matrix(data,nrow,ncol)
-    solve(x1) -> Table
-    View(Table)
-  }
+  cachemean <- function(x, ...) {
+        m <- x$getinverse()
+        if(!is.null(m)) {
+                message("getting cached data")
+                return(m)
+        }
+        # this will inverse the matrices if it is not working.
+        data <- x$get()
+        m <- solve(data, ...)
+        x$setinverse(m)
+        m
+}
  
   
   
